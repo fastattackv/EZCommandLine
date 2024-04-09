@@ -15,6 +15,9 @@ You can also export any interpreter you created to make it usable by anyone.
 
 The module is cross-platform and does not require any modules (except os which is preinstalled with python).
 
+For the mentions see [^1]
+
+
 ## How to install
 
 To install the module, just type `pip install EZCommandLine` in your command line.
