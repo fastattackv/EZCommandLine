@@ -247,7 +247,7 @@ class ModifiableCommandLineInterpreter(CommandLineInterpreter):
                 else:
                     raise TypeError(f"The given object for callback_func is not callable: {callback_func}")
             else:
-                raise ValueError(f"The given name is not valid: the name is empty")
+                raise ValueError("The given name is not valid: the name is empty")
         else:
             raise TypeError(f"The given name is not an str: {type(name)}")
 
@@ -326,17 +326,17 @@ def _decode_interpreter(text: str, funcs_dict: dict[str: Callable]) -> CommandLi
                 if not in_command:
                     in_command = True
                 else:
-                    raise EZCommandLineErrors.DecryptionError(f"Corrupted line: started a new #COMMAND without closing the previous one")
+                    raise EZCommandLineErrors.DecryptionError("Corrupted line: started a new #COMMAND without closing the previous one")
             elif line.startswith("#NAME"):
                 if in_command:
                     command_name = line.removeprefix("#NAME ")
                 else:
-                    raise EZCommandLineErrors.DecryptionError(f"Corrupted line: #NAME outside of #COMMAND")
+                    raise EZCommandLineErrors.DecryptionError("Corrupted line: #NAME outside of #COMMAND")
             elif line.startswith("#BASEARGUMENT"):
                 if in_command:
                     base_argument = _get_type_of_str(line.removeprefix("#BASEARGUMENT "))
                 else:
-                    raise EZCommandLineErrors.DecryptionError(f"Corrupted line: #BASEARGUMENT outside of #COMMAND")
+                    raise EZCommandLineErrors.DecryptionError("Corrupted line: #BASEARGUMENT outside of #COMMAND")
             elif line.startswith("#ARGUMENT"):
                 if in_command:
                     if len(line.split(" ")) == 3:
@@ -344,7 +344,7 @@ def _decode_interpreter(text: str, funcs_dict: dict[str: Callable]) -> CommandLi
                     else:
                         raise EZCommandLineErrors.DecryptionError(f"Corrupted line: {line}")
                 else:
-                    raise EZCommandLineErrors.DecryptionError(f"Corrupted line: #ARGUMENT outside of #COMMAND")
+                    raise EZCommandLineErrors.DecryptionError("Corrupted line: #ARGUMENT outside of #COMMAND")
             elif line == "#COMMANDEND":
                 if in_command:
                     if command_name is not None:
@@ -357,9 +357,9 @@ def _decode_interpreter(text: str, funcs_dict: dict[str: Callable]) -> CommandLi
                         else:
                             raise ValueError(f"The funcs_dict is missing the callback function for: {command_name}")
                     else:
-                        raise EZCommandLineErrors.DecryptionError(f"Missing a #NAME tag in #COMMAND")
+                        raise EZCommandLineErrors.DecryptionError("Missing a #NAME tag in #COMMAND")
                 else:
-                    raise EZCommandLineErrors.DecryptionError(f"Corrupted line: #COMMANDEND without starting starting #COMMAND")
+                    raise EZCommandLineErrors.DecryptionError("Corrupted line: #COMMANDEND without starting starting #COMMAND")
             else:
                 raise EZCommandLineErrors.DecryptionError(f"Corrupted line: {line}")
 
@@ -430,9 +430,3 @@ def non_mutable_interpreter(interpreter: ModifiableCommandLineInterpreter) -> Co
         return new_interpreter
     else:
         raise TypeError(f"The given interpreter is not a mutable interpreter: {type(interpreter)}")
-
-
-interpreter = ModifiableCommandLineInterpreter(lambda error, cause: print(f"error: {error}: {cause}"))
-interpreter.add_command("test", lambda a: print(a), base_argument=str, arguments={"a": str})
-interpreter.add_command("test2", lambda a: print(a), base_argument=None, arguments={"b": str, "c": float, "d": None})
-interpreter.interpret("test2 b atexte c 1.1")
